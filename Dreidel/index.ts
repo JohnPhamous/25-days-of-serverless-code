@@ -1,21 +1,36 @@
-import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 
-const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    context.log('HTTP trigger function processed a request.');
-    const name = (req.query.name || (req.body && req.body.name));
+interface IDreidelFace {
+  symbol: string;
+  friendlyName: string;
+}
 
-    if (name) {
-        context.res = {
-            // status: 200, /* Defaults to 200 */
-            body: "Hello " + (req.query.name || req.body.name)
-        };
-    }
-    else {
-        context.res = {
-            status: 400,
-            body: "Please pass a name on the query string or in the request body"
-        };
-    }
+const ALL_FACES: IDreidelFace[] = [
+  { symbol: "נ", friendlyName: "Nun" },
+  {
+    symbol: "ג",
+    friendlyName: "Gimmel"
+  },
+  {
+    symbol: "ה",
+    friendlyName: "Hay"
+  },
+  {
+    symbol: "ש",
+    friendlyName: "Shin"
+  }
+];
+
+const httpTrigger: AzureFunction = async function(
+  context: Context,
+  req: HttpRequest
+): Promise<void> {
+  const randomIndex = Math.floor(Math.random() * ALL_FACES.length);
+  const randomFace: IDreidelFace = ALL_FACES[randomIndex];
+
+  context.res = {
+    body: `${randomFace.symbol} (${randomFace.friendlyName})`
+  };
 };
 
 export default httpTrigger;
